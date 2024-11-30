@@ -3,14 +3,16 @@ package org.example;
 import org.example.systemManagment.Book;
 import org.example.systemManagment.Library;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        int count = 0;
+    public static void main(String[] args) throws IOException {
         Library library = new Library();
 
+        List<Book> books = library.generateBooksFromFile();
 
         Scanner in = new Scanner(System.in);
         System.out.println("لطفا بگویید چه کاری میخواهید انجام دهید: ۱)ایجاد کتاب ۲) ویرایش کتاب ۳) حذف کتاب ۴) جستجو بر اساس عنوان ۵) جستجو بر اساس نویسنده ۶)مرتب کردن کتاب ها بر اساس سال انتشار لطفا عدد مورد نظر را وارد کنید");
@@ -26,7 +28,8 @@ public class Main {
                 String year = in.next();
                 System.out.println("please enter a status");
                 String status = in.next();
-                library.createBook(count++, title, author, LocalDate.parse(year), Book.Status.valueOf(status));
+                library.createBook( title, author, LocalDate.parse(year), Book.Status.valueOf(status));
+                library.showAllBooksFromFile();
             } else if (number == 2) {
                 System.out.println("please enter a book id ");
                 Integer id = in.nextInt();
@@ -38,21 +41,27 @@ public class Main {
                 String year = in.nextLine();
                 System.out.println("please enter a status");
                 String status = in.nextLine();
-                library.updateBook(id, title, author, LocalDate.parse(year), Book.Status.valueOf(status));
+                library.updateBook(books,id, title, author, LocalDate.parse(year), Book.Status.valueOf(status));
+                library.showAllBooksFromFile();
             } else if (number == 3) {
                 System.out.println("please enter a book id ");
                 Integer id = in.nextInt();
-                library.deleteBook(id);
+                library.deleteBook(books,id);
+                library.showAllBooksFromFile();
             } else if (number == 4) {
                 System.out.println("please enter a book title");
                 String title = in.next();
-                System.out.println(library.getBooksByTitle(title));
+                library.getBooksByTitle(books,title);
+                library.showAllBooksFromFile();
+                library.showAllBooksFromFile();
             } else if (number == 5) {
                 System.out.println("please enter a book author");
                 String author = in.next();
-                System.out.println(library.getBooksByAuthor(author));
+                library.getBooksByAuthor(books,author);
+                library.showAllBooksFromFile();
             } else if (number == 6) {
-                System.out.println(library.sortedByYearPublication());
+                library.sortedByYearPublication(books);
+                library.showAllBooksFromFile();
             }
         } while (number != 0);
 
