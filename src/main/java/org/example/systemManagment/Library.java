@@ -45,7 +45,7 @@ public class Library {
     }
 
     public List<String> getBooksByTitle(String title, ArrayList<Book> books) {
-        return books.stream().filter(item -> item.getTitle().equals(title)).map(Book::getTitle).toList();
+        return books.stream().filter(item -> item.getTitle().equals(title)).map(Book::getAuthor).toList();
     }
 
     public List<String> getBooksByAuthor(String author, ArrayList<Book> books) {
