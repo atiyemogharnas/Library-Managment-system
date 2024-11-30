@@ -25,12 +25,14 @@ public class Library<T extends Book> {
             throw new IllegalArgumentException("Book id cannot be null for update");
         }
         for (Iterator<T> it = books.iterator(); it.hasNext(); ) {
+            T lastBook = it.next();
             T book = it.next();
             if (book.getId() == id) {
                 book.setTitle(title == null ? book.getTitle() : title);
                 book.setAuthor(author == null ? book.getAuthor() : author);
                 book.setYearPublication(yearPublication == null ? book.getYearPublication() : yearPublication);
                 book.setStatus(status == null ? book.getStatus() : status);
+                books.remove(lastBook);
                 books.add(book);
 
             } else {
