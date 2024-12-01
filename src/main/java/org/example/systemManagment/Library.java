@@ -14,6 +14,7 @@ public class Library {
         if (!file.exists()) {
             throw new RuntimeException("file not found");
         }
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
