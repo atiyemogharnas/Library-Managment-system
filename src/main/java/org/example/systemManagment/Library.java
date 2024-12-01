@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Library {
 
-    File file = new File("/Users/atiyemogharnas/Documents/Mahsan/book/src/main/resources/BookFile.pages");
+    File file = new File("/Users/atiyemogharnas/Documents/Mahsan/book/src/main/resources/bl.txt");
     int count = 0;
 
     public List<Book> generateBooksFromFile() {
@@ -33,23 +33,18 @@ public class Library {
         return books;
     }
 
-    public void createBook( String title, String author, LocalDate yearPublication, Book.Status status) {
+    public void createBook(List<Book> books, String title, String author, LocalDate yearPublication, Book.Status status) {
+        if (!books.isEmpty()) {
+            count = books.get(books.size() - 1).getId();
+        }
         Book book = new Book();
         book.setId(count++);
         book.setTitle(title);
         book.setAuthor(author);
         book.setYearPublication(yearPublication);
         book.setStatus(status);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(String.format("%d_%s_%s_%s_%s\n",
-                    book.getId(),
-                    book.getTitle(),
-                    book.getAuthor(),
-                    book.getYearPublication(),
-                    book.getStatus()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        books.add(book);
+        writeInFile(books);
     }
 
 
@@ -62,24 +57,18 @@ public class Library {
         }
         for (Iterator<Book> it = books.iterator(); it.hasNext(); ) {
             Book book = it.next();
+            Book lastBook = it.next();
             if (book.getId() == id) {
                 book.setTitle(title == null ? book.getTitle() : title);
                 book.setAuthor(author == null ? book.getAuthor() : author);
                 book.setYearPublication(yearPublication == null ? book.getYearPublication() : yearPublication);
                 book.setStatus(status == null ? book.getStatus() : status);
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    writer.write(String.format("%d_%s_%s_%s_%s\n",
-                            book.getId(),
-                            book.getTitle(),
-                            book.getAuthor(),
-                            book.getYearPublication(),
-                            book.getStatus()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                books.remove(lastBook);
+                books.add(book);
             } else {
                 throw new RuntimeException("book id does not match");
             }
+            writeInFile(books);
         }
     }
 
@@ -88,39 +77,26 @@ public class Library {
             throw new IllegalArgumentException("Book id cannot be null for delete");
         }
         books.removeIf(book -> book.getId() == id);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Book book : books) {
-                writer.write(String.format("%d_%s_%s_%s_%s\n",
-                        book.getId(),
-                        book.getTitle(),
-                        book.getAuthor(),
-                        book.getYearPublication(),
-                        book.getStatus()));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        writeInFile(books);
     }
 
     public void getBooksByTitle(List<Book> books, String title) {
         books.stream().filter(item -> item.getTitle().equals(title)).toList();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Book book : books) {
-                writer.write(String.format("%d_%s_%s_%s_%s\n",
-                        book.getId(),
-                        book.getTitle(),
-                        book.getAuthor(),
-                        book.getYearPublication(),
-                        book.getStatus()));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        writeInFile(books);
 
     }
 
     public void getBooksByAuthor(List<Book> books, String author) {
         books.stream().filter(item -> item.getAuthor().equals(author)).toList();
+        writeInFile(books);
+    }
+
+    public void sortedByYearPublication(List<Book> books) {
+        books.stream().sorted(Comparator.comparing(Book::getYearPublication)).toList();
+       writeInFile(books);
+    }
+
+    public void writeInFile(List<Book> books) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (Book book : books) {
                 writer.write(String.format("%d_%s_%s_%s_%s\n",
@@ -134,28 +110,4 @@ public class Library {
             throw new RuntimeException(e);
         }
     }
-
-        public void sortedByYearPublication (List<Book> books) {
-        books.stream().sorted(Comparator.comparing(Book::getYearPublication)).toList();
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                for (Book book : books) {
-                    writer.write(String.format("%d_%s_%s_%s_%s\n",
-                            book.getId(),
-                            book.getTitle(),
-                            book.getAuthor(),
-                            book.getYearPublication(),
-                            book.getStatus()));
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void showAllBooksFromFile () throws IOException {
-            BufferedReader br = new BufferedReader(new FileReader("/Users/atiyemogharnas/Documents/Mahsan/book/src/main/resources/booklist.pages"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-        }
-    }
+}

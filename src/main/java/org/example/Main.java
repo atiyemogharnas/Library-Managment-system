@@ -28,8 +28,8 @@ public class Main {
                 String year = in.next();
                 System.out.println("please enter a status");
                 String status = in.next();
-                library.createBook( title, author, LocalDate.parse(year), Book.Status.valueOf(status));
-                library.showAllBooksFromFile();
+                library.createBook(books, title, author, LocalDate.parse(year), Book.Status.valueOf(status));
+                System.out.println("کاربر به فایل افزوده شد");
             } else if (number == 2) {
                 System.out.println("please enter a book id ");
                 Integer id = in.nextInt();
@@ -42,26 +42,25 @@ public class Main {
                 System.out.println("please enter a status");
                 String status = in.nextLine();
                 library.updateBook(books,id, title, author, LocalDate.parse(year), Book.Status.valueOf(status));
-                library.showAllBooksFromFile();
+                System.out.println("کاربر در فایل آبدیت شد");
             } else if (number == 3) {
                 System.out.println("please enter a book id ");
                 Integer id = in.nextInt();
                 library.deleteBook(books,id);
-                library.showAllBooksFromFile();
+                System.out.println("کاربر از فایل حذف شد");
             } else if (number == 4) {
                 System.out.println("please enter a book title");
                 String title = in.next();
                 library.getBooksByTitle(books,title);
-                library.showAllBooksFromFile();
-                library.showAllBooksFromFile();
+                System.out.println("فایل بروزرسانی شد");
             } else if (number == 5) {
                 System.out.println("please enter a book author");
                 String author = in.next();
                 library.getBooksByAuthor(books,author);
-                library.showAllBooksFromFile();
+                System.out.println("فایل بروزرسانی شد");
             } else if (number == 6) {
                 library.sortedByYearPublication(books);
-                library.showAllBooksFromFile();
+                System.out.println("فایل بروزرسانی شد");
             }
         } while (number != 0);
 
