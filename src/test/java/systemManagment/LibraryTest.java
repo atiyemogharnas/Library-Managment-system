@@ -1,10 +1,9 @@
 package systemManagment;
 
-import org.example.systemManagment.Book;
+import org.example.systemManagment.entity.Book;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,13 +19,13 @@ public class LibraryTest {
         Book book1 = new Book();
         book1.setTitle("test Title");
         book1.setAuthor("test Author");
-        book1.setYearPublication(LocalDate.parse("2020-01-01"));
+        book1.setYear(Integer.parseInt("2020"));
         book1.setStatus(Book.Status.valueOf("EXIST"));
 
         Book book2 = new Book();
         book2.setTitle("test2 Title");
         book2.setAuthor("test2 Author");
-        book2.setYearPublication(LocalDate.parse("2024-02-21"));
+        book2.setYear(Integer.parseInt("2024"));
         book2.setStatus(Book.Status.valueOf("EXIST"));
 
         books.addAll(Arrays.asList(book1, book2));
@@ -40,13 +39,13 @@ public class LibraryTest {
         Book book1 = new Book();
         book1.setTitle("test Title");
         book1.setAuthor("test Author");
-        book1.setYearPublication(LocalDate.parse("2020-01-01"));
+        book1.setYear(Integer.parseInt("2020"));
         book1.setStatus(Book.Status.valueOf("EXIST"));
 
         Book book2 = new Book();
         book2.setTitle("test2 Title");
         book2.setAuthor("test2 Author");
-        book2.setYearPublication(LocalDate.parse("2024-02-21"));
+        book2.setYear(Integer.parseInt("2024"));
         book2.setStatus(Book.Status.valueOf("EXIST"));
         books.addAll(Arrays.asList(book1, book2));
 
@@ -62,13 +61,13 @@ public class LibraryTest {
         Book book1 = new Book();
         book1.setTitle("test Title");
         book1.setAuthor("test Author");
-        book1.setYearPublication(LocalDate.parse("2020-01-01"));
+        book1.setYear(Integer.parseInt("2020"));
         book1.setStatus(Book.Status.valueOf("EXIST"));
 
         Book book2 = new Book();
         book2.setTitle("test2 Title");
         book2.setAuthor("test2 Author");
-        book2.setYearPublication(LocalDate.parse("2024-02-21"));
+        book2.setYear(Integer.parseInt("2024"));
         book2.setStatus(Book.Status.valueOf("EXIST"));
         books.addAll(Arrays.asList(book1, book2));
         Assert.assertThrows( Exception.class, () -> {books.stream().filter(book -> book.getId() == 3).findFirst().get();});
@@ -79,13 +78,13 @@ public class LibraryTest {
         Book book1 = new Book();
         book1.setTitle("test Title");
         book1.setAuthor("test Author");
-        book1.setYearPublication(LocalDate.parse("2020-01-01"));
+        book1.setYear(Integer.parseInt("2020"));
         book1.setStatus(Book.Status.valueOf("EXIST"));
 
         Book book2 = new Book();
         book2.setTitle("test2 Title");
         book2.setAuthor("test2 Author");
-        book2.setYearPublication(LocalDate.parse("2024-02-21"));
+        book2.setYear(Integer.parseInt("2024"));
         book2.setStatus(Book.Status.valueOf("EXIST"));
         books.addAll(Arrays.asList(book1, book2));
 
@@ -99,13 +98,13 @@ public class LibraryTest {
         Book book1 = new Book();
         book1.setTitle("test Title");
         book1.setAuthor("test Author");
-        book1.setYearPublication(LocalDate.parse("2020-01-01"));
+        book1.setYear(Integer.parseInt("2020"));
         book1.setStatus(Book.Status.valueOf("EXIST"));
 
         Book book2 = new Book();
         book2.setTitle("test2 Title");
         book2.setAuthor("test2 Author");
-        book2.setYearPublication(LocalDate.parse("2024-02-21"));
+        book2.setYear(Integer.parseInt("2024"));
         book2.setStatus(Book.Status.valueOf("EXIST"));
         books.addAll(Arrays.asList(book1, book2));
 
