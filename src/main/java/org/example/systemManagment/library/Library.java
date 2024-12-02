@@ -116,13 +116,14 @@ public class Library implements Comparator<LibraryItem> {
     }
 
     public void search(String keyword) {
-        for (LibraryItem item : libraryItems) {
-            if (item.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                    item.getAuthor().toLowerCase().contains(keyword.toLowerCase()) ||
-                    item.getYear() == Integer.parseInt(keyword.trim())) {
-                System.out.println(item.getTitle() + " " + item.getAuthor() + " " + item.getYear());
-            }
-        }
+        binerySearch(0, libraryItems.size()-1, keyword);
+//        for (LibraryItem item : libraryItems) {
+//            if (item.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    item.getAuthor().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    item.getYear() == Integer.parseInt(keyword.trim())) {
+//                System.out.println(item.getTitle() + " " + item.getAuthor() + " " + item.getYear());
+//            }
+//        }
     }
 
     public void dispalyAllLibraryItems() {
@@ -131,11 +132,11 @@ public class Library implements Comparator<LibraryItem> {
         }
     }
 
-    public void sortList(){
+    public void sortList() {
         Comparator<LibraryItem> myComparator = new Library();
         libraryItems.sort(myComparator);
         for (LibraryItem item : libraryItems) {
-           item.display();
+            item.display();
         }
     }
 
@@ -147,6 +148,18 @@ public class Library implements Comparator<LibraryItem> {
             return -1;
         } else {
             return 0;
+        }
+    }
+
+    public LibraryItem binerySearch( int first, int end, String key) {
+        int mid = (first + end) / 2;
+        LibraryItem middleItem = libraryItems.get(mid);
+        if (middleItem.getTitle().equalsIgnoreCase(key)) {
+          return middleItem;
+        }else if(middleItem.getTitle().compareTo(key) > 0) {
+            return binerySearch(first, mid - 1, key);
+        }else {
+            return binerySearch(mid + 1, end, key);
         }
     }
 }
