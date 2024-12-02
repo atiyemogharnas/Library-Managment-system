@@ -10,11 +10,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Library implements Comparator {
+public class Library implements Comparator<LibraryItem> {
 
     private List<LibraryItem> libraryItems = new ArrayList<>();
 
@@ -133,20 +132,18 @@ public class Library implements Comparator {
     }
 
     public void sortList(){
-        Comparator myComparator = new Library();
-        Collections.sort(libraryItems, myComparator);
+        Comparator<LibraryItem> myComparator = new Library();
+        libraryItems.sort(myComparator);
         for (LibraryItem item : libraryItems) {
            item.display();
         }
     }
 
     @Override
-    public int compare(Object o1, Object o2) {
-        LibraryItem item1 = (LibraryItem) o1;
-        LibraryItem item2 = (LibraryItem) o2;
-        if (item1.getTitle().compareTo(item2.getTitle()) < 0) {
+    public int compare(LibraryItem o1, LibraryItem o2) {
+        if (o1.getTitle().compareTo(o2.getTitle()) < 0) {
             return 1;
-        } else if (item1.getTitle().compareTo(item2.getTitle()) > 0) {
+        } else if (o1.getTitle().compareTo(o2.getTitle()) > 0) {
             return -1;
         } else {
             return 0;
