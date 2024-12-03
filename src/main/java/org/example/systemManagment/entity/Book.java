@@ -6,6 +6,7 @@ import org.example.systemManagment.library.LibraryItem;
 public class Book extends LibraryItem {
 
     private Status status;
+    private Integer returnDate ;
 
     @Override
     public void display() {
@@ -26,5 +27,13 @@ public class Book extends LibraryItem {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Integer getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Integer returnDate) {
+        this.returnDate = returnDate;
     }
 }
