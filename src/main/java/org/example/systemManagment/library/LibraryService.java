@@ -2,6 +2,7 @@ package org.example.systemManagment.library;
 
 import org.example.systemManagment.entity.Book;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +20,8 @@ public class LibraryService implements Searchable, Sortable {
 
     public LibraryService(LibraryRepository libraryRepository) {
         this.libraryRepository = libraryRepository;
-        libraryItems = libraryRepository.getLibraryItems();
+//        libraryItems = libraryRepository.getLibraryItems();
+        this.libraryItems = new ArrayList<>();
     }
 
     @Override

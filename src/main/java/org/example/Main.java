@@ -19,14 +19,15 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         BlockingQueue<String> requestQueue = new LinkedBlockingQueue<>();
-        FileReader fileReader = new FileReader();
-        LibraryRepository libraryRepository = new LibraryRepository(fileReader);
+//        FileReader fileReader = new FileReader();
+        LibraryRepository libraryRepository = new LibraryRepository();
+//        LibraryRepository libraryRepository = new LibraryRepository(fileReader);
         LibraryService libraryService = new LibraryService(libraryRepository);
         SerializeFile serializeFile = new SerializeFile(libraryRepository);
         boolean fail = true;
 
         Thread userThread = new Thread(new UserThread(requestQueue));
-        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService));
+        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService, libraryRepository));
 
         userThread.start();
         bookManagmentThread.start();
