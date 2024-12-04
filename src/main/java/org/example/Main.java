@@ -1,19 +1,35 @@
 package org.example;
 
-import org.example.systemManagment.FileReader;
+import org.example.systemManagment.ConvertTime;
+import org.example.systemManagment.file.FileReader;
 import org.example.systemManagment.entity.Book;
+import org.example.systemManagment.file.SerializeFile;
 import org.example.systemManagment.library.LibraryRepository;
 import org.example.systemManagment.library.LibraryItem;
 import org.example.systemManagment.library.LibraryService;
+import org.example.systemManagment.multithread.BookManagementThread;
+import org.example.systemManagment.multithread.UserThread;
 
+import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
+        BlockingQueue<String> requestQueue = new LinkedBlockingQueue<>();
         FileReader fileReader = new FileReader();
         LibraryRepository libraryRepository = new LibraryRepository(fileReader);
         LibraryService libraryService = new LibraryService(libraryRepository);
+        SerializeFile serializeFile = new SerializeFile(libraryRepository);
+        boolean fail = true;
+
+        Thread userThread = new Thread(new UserThread(requestQueue));
+        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService));
+
+        userThread.start();
+        bookManagmentThread.start();
 
         Scanner in = new Scanner(System.in);
         System.out.println("1. display all item");
@@ -26,6 +42,8 @@ public class Main {
         System.out.println("8. Borrowing Book ");
         System.out.println("9. set return date for Book ");
         System.out.println("10. show status Book ");
+        System.out.println("11. serialize file ");
+        System.out.println("12. deserialize file ");
         String choice = in.nextLine();
         do {
             switch (choice) {
@@ -52,7 +70,7 @@ public class Main {
                         Book book = new Book();
                         book.setTitle(title);
                         book.setAuthor(author);
-                        book.setYear(Integer.parseInt(year));
+                        book.setYear(ConvertTime.convertStringToDate(year));
                         book.setType(LibraryItem.LibraryItemType.BOOK);
                         book.setStatus(Book.Status.valueOf(status));
                         libraryRepository.addLibraryItem(book);
@@ -102,7 +120,7 @@ public class Main {
                     System.out.println("please enter a id book for returning");
                     int idBookForReturn = in.nextInt();
                     System.out.println("please enter a date for return book ");
-                    int dateBookForReturn = in.nextInt();
+                    String dateBookForReturn = in.nextLine();
                     libraryService.ReturnedBook(idBookForReturn, dateBookForReturn);
                     break;
 
@@ -112,9 +130,25 @@ public class Main {
                     System.out.println(libraryService.showStatusBook(idBookForShow));
                     break;
 
+                case "11":
+                    LibraryItem book = new Book(1, "fizik", "ati", ConvertTime.convertStringToDate("1376-09-09 23:09:43"), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST, null);
+                    serializeFile.serialize(book);
+                    fail = false;
+                    break;
+
+                case "12":
+                    serializeFile.deserialize();
+                    fail = false;
+                    break;
+
+                case "13":
+                    LibraryItem bookTesti = new Book(1, "fizik", "ati", ConvertTime.convertStringToDate("1376-09-09 23:09:43"), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST, null);
+                    serializeFile.serializeWithJson(bookTesti);
+                    fail = false;
+                    break;
             }
 
-        } while (Integer.parseInt(choice) != 0);
+        } while (fail);
 
     }
 }
