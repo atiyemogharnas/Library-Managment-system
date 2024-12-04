@@ -1,11 +1,13 @@
 package org.example.systemManagment.library;
 
-import org.example.systemManagment.FileReader;
+import org.example.systemManagment.file.FileReader;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.entity.Magazine;
 import org.example.systemManagment.entity.Refrence;
 import org.example.systemManagment.entity.Thesis;
 
+import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 public class LibraryRepository {
@@ -13,7 +15,7 @@ public class LibraryRepository {
     private final List<LibraryItem> libraryItems;
 
 
-    public LibraryRepository(FileReader fileReader) {
+    public LibraryRepository(FileReader fileReader) throws FileNotFoundException {
         this.fileReader =fileReader;
         this.libraryItems = fileReader.readLibrartItemesFromFile();
     }
@@ -27,7 +29,7 @@ public class LibraryRepository {
         libraryItems.remove(getLibraryItemById(id));
     }
 
-    public void updateLibraryItem(int id, LibraryItem.LibraryItemType type, String status, Integer returnDate, String genre, String university, String refrenceType) {
+    public void updateLibraryItem(int id, LibraryItem.LibraryItemType type, String status, Date returnDate, String genre, String university, String refrenceType) {
         LibraryItem oldItem = getLibraryItemById(id);
         if (type == LibraryItem.LibraryItemType.BOOK) {
             Book book = (Book) oldItem;
@@ -52,11 +54,18 @@ public class LibraryRepository {
             refrence.setRefrenceType(Refrence.RefrenceType.valueOf(refrenceType));
             libraryItems.remove(oldItem);
             libraryItems.add(refrence);
+        } else {
+            throw new RuntimeException("Unknown library item type");
         }
     }
 
     public LibraryItem getLibraryItemById(int id) {
-        return libraryItems.get(id);
+        LibraryItem item = libraryItems.get(id);
+        if (item == null) {
+            throw new RuntimeException("Library item not found");
+        }else {
+            return item;
+        }
     }
 
     public List<LibraryItem> getLibraryItems() {

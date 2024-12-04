@@ -1,11 +1,17 @@
 package org.example.systemManagment.library;
 
-public abstract class LibraryItem {
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
 
+public abstract class LibraryItem implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     private int id;
     private String title;
     private String author;
-    private int year;
+    private Date year;
     private LibraryItemType type;
 
 
@@ -16,7 +22,7 @@ public abstract class LibraryItem {
         REFRENCE
     }
 
-    public LibraryItem(int id, String title, String author, int year, LibraryItemType type) {
+    public LibraryItem(int id, String title, String author, Date year, LibraryItemType type) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -51,11 +57,11 @@ public abstract class LibraryItem {
         this.author = author;
     }
 
-    public int getYear() {
+    public Date getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Date year) {
         this.year = year;
     }
 
