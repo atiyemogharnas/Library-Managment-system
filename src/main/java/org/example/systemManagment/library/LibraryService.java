@@ -2,6 +2,7 @@ package org.example.systemManagment.library;
 
 import org.example.systemManagment.entity.Book;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -12,18 +13,19 @@ import static org.example.systemManagment.ConvertTime.convertStringToDate;
 
 public class LibraryService implements Searchable, Sortable {
 
-    private Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     List<LibraryItem> libraryItems;
     LibraryRepository libraryRepository;
 
     public LibraryService(LibraryRepository libraryRepository) {
         this.libraryRepository = libraryRepository;
-        libraryItems = libraryRepository.getLibraryItems();
+//        libraryItems = libraryRepository.getLibraryItems();
+        this.libraryItems = new ArrayList<>();
     }
 
     @Override
-    public void searchLibraryItemsByValue(String value) {
+    public synchronized void searchLibraryItemsByValue(String value) {
         for (LibraryItem item : libraryItems) {
             if (item.getTitle().toLowerCase().contains(value.toLowerCase()) ||
                     item.getAuthor().toLowerCase().contains(value.toLowerCase())) {
@@ -35,7 +37,7 @@ public class LibraryService implements Searchable, Sortable {
     }
 
     @Override
-    public void sortByKeyword(String sortFiledName) {
+    public synchronized void sortByKeyword(String sortFiledName) {
         if (Objects.equals(sortFiledName.toLowerCase(), "title")) {
             libraryItems.sort(Comparator.comparing(LibraryItem::getTitle));
         } else if (Objects.equals(sortFiledName.toLowerCase(), "author")) {
@@ -49,13 +51,13 @@ public class LibraryService implements Searchable, Sortable {
         }
     }
 
-        public void displayAllLibraryItems() {
+    public synchronized void displayAllLibraryItems() {
         for (LibraryItem item : libraryItems) {
             item.display();
         }
     }
 
-        public void displayItem(int id) {
+    public synchronized void displayItem(int id) {
         LibraryItem item = libraryRepository.getLibraryItemById(id);
         item.display();
     }
@@ -70,7 +72,7 @@ public class LibraryService implements Searchable, Sortable {
             } else {
                 throw new RuntimeException("امکان قرض گرفتن کتاب وجود ندارد");
             }
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -84,7 +86,7 @@ public class LibraryService implements Searchable, Sortable {
             } else {
                 throw new RuntimeException("امکان قرض گرفته شده وجود ندارد");
             }
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -93,5 +95,4 @@ public class LibraryService implements Searchable, Sortable {
         Book book = (Book) libraryRepository.getLibraryItemById(id);
         return book.getStatus().name();
     }
-
 }

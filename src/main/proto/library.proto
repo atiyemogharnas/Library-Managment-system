@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.example.systemManagment.file";
+option java_outer_classname = "LibraryProtoc";
+
+message LibraryItem {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string year = 4;
+  LibraryItemType type = 5;
+
+  enum LibraryItemType {
+    BOOK = 0;
+    MAGAZINE = 1;
+    THESIS = 2;
+    REFERENCE = 3;
+  }
+}
