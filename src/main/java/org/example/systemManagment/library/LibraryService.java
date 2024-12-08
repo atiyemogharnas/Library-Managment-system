@@ -114,4 +114,10 @@ public class LibraryService implements Searchable, Sortable {
         Book book = (Book) libraryRepository.getLibraryItemById(id);
         return book.getStatus().name();
     }
+
+    public void createItem(String objectType) {
+        LibraryItem item = CreateLibraryItem.createItem(objectType);
+        //this is add properties from user to add item
+        libraryRepository.addLibraryItem(item);
+    }
 }
