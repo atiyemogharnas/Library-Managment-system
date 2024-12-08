@@ -42,6 +42,8 @@ public class LibraryRepository {
             condition.await();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }finally {
+            lock.unlock();
         }
 //        libraryItems.add(item);
 
@@ -55,6 +57,8 @@ public class LibraryRepository {
             condition.wait();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }finally {
+            lock.unlock();
         }
     }
 
@@ -98,7 +102,9 @@ public class LibraryRepository {
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }  finally {
+        lock.unlock();
+    }
     }
 
     public LibraryItem getLibraryItemById(int id) {
