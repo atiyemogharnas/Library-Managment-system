@@ -4,14 +4,13 @@ import org.example.systemManagment.ConvertTime;
 import org.example.systemManagment.file.FileReader;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.file.SerializeFile;
-import org.example.systemManagment.library.LibraryRepository;
-import org.example.systemManagment.library.LibraryItem;
-import org.example.systemManagment.library.LibraryService;
+import org.example.systemManagment.library.*;
 import org.example.systemManagment.multithread.BookManagementThread;
 import org.example.systemManagment.multithread.UserThread;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
@@ -62,6 +61,7 @@ public class Main {
         System.out.println("10. show status Book ");
         System.out.println("11. serialize file ");
         System.out.println("12. deserialize file ");
+        System.out.println("14. advanced search ");
         String choice = in.nextLine();
         do {
             switch (choice) {
@@ -165,6 +165,35 @@ public class Main {
                     serializeFile.serializeWithJson(bookTesti);
                     fail = false;
                     break;
+
+                case "14":
+                    System.out.println("please enter a type for search like title, author or ...");
+                    String textForSearch = in.nextLine();
+                    if (textForSearch.equalsIgnoreCase("title")) {
+                        System.out.println("please enter a word for search ");
+                        String word = in.nextLine();
+                        SearchByTitle searchByTitle = new SearchByTitle();
+                        List<LibraryItem> items = searchByTitle.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                    }else if (textForSearch.equalsIgnoreCase("author")) {
+                        System.out.println("please enter a word for search ");
+                        String word = in.nextLine();
+                        SearchByAuthor searchByAuthor = new SearchByAuthor();
+                        List<LibraryItem> items =searchByAuthor.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                    }else if (textForSearch.equalsIgnoreCase("date")) {
+                        System.out.println("please enter a year for search ");
+                        String word = in.nextLine();
+                        SearchByYear searchByYear = new SearchByYear();
+                        List<LibraryItem> items =searchByYear.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                    }
             }
 
         } while (fail);

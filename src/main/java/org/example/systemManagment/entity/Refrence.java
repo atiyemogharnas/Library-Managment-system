@@ -26,4 +26,14 @@ public class Refrence extends LibraryItem {
         System.out.println("Type: " + getType());
     }
 
+    @Override
+    public String toString() {
+        return "LibraryItem{" +
+                "title='" + getTitle() + '\'' +
+                ", author='" + getAuthor() + '\'' +
+                ", year='" + getYear() + '\'' +
+                ", refrenceType='" + getRefrenceType() + '\'' +
+                '}';
+    }
+
 }
