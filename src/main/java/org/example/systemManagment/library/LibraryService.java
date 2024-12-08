@@ -30,9 +30,15 @@ public class LibraryService implements Searchable, Sortable {
         libraryItems = libraryRepository.getLibraryItems();
     }
 
-    public static LibraryService getInstance(LibraryRepository libraryRepository){
+    //first write synchronized in function
+    //second double check
+    public  static LibraryService getInstance(LibraryRepository libraryRepository){
         if(instance == null){
-           instance = new LibraryService(libraryRepository);
+            synchronized (LibraryService.class){
+                if (instance == null){
+                    instance = new LibraryService(libraryRepository);
+                }
+            }
         }
         return instance;
     }
