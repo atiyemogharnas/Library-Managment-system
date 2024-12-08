@@ -13,15 +13,28 @@ import static org.example.systemManagment.ConvertTime.convertStringToDate;
 
 public class LibraryService implements Searchable, Sortable {
 
-    private final Lock lock = new ReentrantLock();
+    private static LibraryService instance;
+//    private final Lock lock = new ReentrantLock();
 
     List<LibraryItem> libraryItems;
     LibraryRepository libraryRepository;
 
-    public LibraryService(LibraryRepository libraryRepository) {
-        this.libraryRepository = libraryRepository;
+//    public LibraryService(LibraryRepository libraryRepository) {
+//        this.libraryRepository = libraryRepository;
 //        libraryItems = libraryRepository.getLibraryItems();
-        this.libraryItems = new ArrayList<>();
+//        this.libraryItems = new ArrayList<>();
+//    }
+
+    private LibraryService(LibraryRepository libraryRepository){
+        this.libraryRepository = libraryRepository;
+        libraryItems = libraryRepository.getLibraryItems();
+    }
+
+    public static LibraryService getInstance(LibraryRepository libraryRepository){
+        if(instance == null){
+           instance = new LibraryService(libraryRepository);
+        }
+        return instance;
     }
 
     @Override
@@ -64,31 +77,31 @@ public class LibraryService implements Searchable, Sortable {
 
 
     public void BorrowingBook(Integer id) {
-        lock.lock();
-        try {
+//        lock.lock();
+//        try {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.EXIST) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.BORROWED.name(), null, null, null, null);
             } else {
                 throw new RuntimeException("امکان قرض گرفتن کتاب وجود ندارد");
             }
-        } finally {
-            lock.unlock();
-        }
+//        } finally {
+//            lock.unlock();
+//        }
     }
 
     public void ReturnedBook(Integer id, String returnDateString) {
-        lock.lock();
-        try {
+//        lock.lock();
+//        try {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.BORROWED) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST.name(), convertStringToDate(returnDateString), null, null, null);
             } else {
                 throw new RuntimeException("امکان قرض گرفته شده وجود ندارد");
             }
-        } finally {
-            lock.unlock();
-        }
+//        } finally {
+//            lock.unlock();
+//        }
     }
 
     public String showStatusBook(Integer id) {

@@ -19,32 +19,32 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         BlockingQueue<String> requestQueue = new LinkedBlockingQueue<>();
-//        FileReader fileReader = new FileReader();
-        LibraryRepository libraryRepository = new LibraryRepository();
-//        LibraryRepository libraryRepository = new LibraryRepository(fileReader);
-        LibraryService libraryService = new LibraryService(libraryRepository);
+        FileReader fileReader = new FileReader();
+//        LibraryRepository libraryRepository = new LibraryRepository();
+        LibraryRepository libraryRepository = new LibraryRepository(fileReader);
+        LibraryService libraryService = LibraryService.getInstance(libraryRepository);
         SerializeFile serializeFile = new SerializeFile(libraryRepository);
         boolean fail = true;
 
 //        Thread userThread = new Thread(new UserThread(requestQueue));
 //        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService, libraryRepository));
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-
-        Future<?> future1 = executorService.submit(new UserThread(requestQueue));
-        try{
-            future1.get(5000, TimeUnit.MILLISECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-
-        Future<?> future2 = executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
-        try{
-            future2.get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        executorService.shutdown();
+//        ExecutorService executorService = Executors.newFixedThreadPool(2);
+//
+//        Future<?> future1 = executorService.submit(new UserThread(requestQueue));
+//        try{
+//            future1.get(5000, TimeUnit.MILLISECONDS);
+//        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        Future<?> future2 = executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
+//        try{
+//            future2.get();
+//        } catch (ExecutionException | InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//        executorService.shutdown();
 
 //        userThread.start();
 //        bookManagmentThread.start();
@@ -67,6 +67,7 @@ public class Main {
             switch (choice) {
                 case "1":
                     libraryService.displayAllLibraryItems();
+                    fail = false;
                     break;
                 case "2":
                     System.out.println("please enter a keyword for search");
