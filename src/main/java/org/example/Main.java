@@ -13,6 +13,8 @@ import org.example.systemManagment.multithread.UserThread;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main {
@@ -26,11 +28,18 @@ public class Main {
         SerializeFile serializeFile = new SerializeFile(libraryRepository);
         boolean fail = true;
 
-        Thread userThread = new Thread(new UserThread(requestQueue));
-        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService, libraryRepository));
+//        Thread userThread = new Thread(new UserThread(requestQueue));
+//        Thread bookManagmentThread = new Thread(new BookManagementThread(requestQueue, libraryService, libraryRepository));
 
-        userThread.start();
-        bookManagmentThread.start();
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        executorService.submit(new UserThread(requestQueue));
+        executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
+
+        executorService.shutdown();
+
+//        userThread.start();
+//        bookManagmentThread.start();
 
         Scanner in = new Scanner(System.in);
         System.out.println("1. display all item");
@@ -138,7 +147,7 @@ public class Main {
                     break;
 
                 case "12":
-                    serializeFile.deserialize();
+                    serializeFile.serializeWithProtoc();
                     fail = false;
                     break;
 

@@ -16,7 +16,7 @@ public class SerializeFile {
     }
 
 
-    public void serializeWithJson(LibraryItem libraryItem){
+    public void serializeWithJson(LibraryItem libraryItem) {
         Gson gson = new Gson();
         String json = gson.toJson(libraryItem);
         System.out.println("serialize Object success");
@@ -39,9 +39,9 @@ public class SerializeFile {
     public void deserialize() {
         try {
             System.out.println("Deserialized Object:");
-            FileInputStream fis=new FileInputStream(path);
-            ObjectInputStream ois=new ObjectInputStream(fis);
-            LibraryItem item=(LibraryItem) ois.readObject();
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            LibraryItem item = (LibraryItem) ois.readObject();
             System.out.println("Deserialization success");
             System.out.println(item.getTitle() + " " + item.getAuthor());
         } catch (IOException ex) {
@@ -50,4 +50,25 @@ public class SerializeFile {
             throw new RuntimeException(e);
         }
     }
+
+    public void serializeWithProtoc() {
+        try {
+            org.example.systemManagment.file.LibraryItem item = org.example.systemManagment.file.LibraryItem.newBuilder()
+                    .setId(1)
+                    .setTitle("test")
+                    .setAuthor("George")
+                    .setYear("1377-08-01 23:09:43")
+                    .build();
+
+            byte[] serializedData = item.toByteArray();
+
+            org.example.systemManagment.file.LibraryItem deserializedItem = org.example.systemManagment.file.LibraryItem.parseFrom(serializedData);
+
+            System.out.println("Title: " + deserializedItem.getTitle());
+            System.out.println("Author: " + deserializedItem.getAuthor());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,7 +14,8 @@ import static org.example.systemManagment.ConvertTime.convertStringToDate;
 
 public class LibraryService implements Searchable, Sortable {
 
-    private Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
+    private Condition condition = lock.newCondition();
 
     List<LibraryItem> libraryItems;
     LibraryRepository libraryRepository;
@@ -25,7 +27,7 @@ public class LibraryService implements Searchable, Sortable {
     }
 
     @Override
-    public void searchLibraryItemsByValue(String value) {
+    public synchronized void searchLibraryItemsByValue(String value) {
         for (LibraryItem item : libraryItems) {
             if (item.getTitle().toLowerCase().contains(value.toLowerCase()) ||
                     item.getAuthor().toLowerCase().contains(value.toLowerCase())) {
@@ -37,7 +39,7 @@ public class LibraryService implements Searchable, Sortable {
     }
 
     @Override
-    public void sortByKeyword(String sortFiledName) {
+    public synchronized void sortByKeyword(String sortFiledName) {
         if (Objects.equals(sortFiledName.toLowerCase(), "title")) {
             libraryItems.sort(Comparator.comparing(LibraryItem::getTitle));
         } else if (Objects.equals(sortFiledName.toLowerCase(), "author")) {
@@ -51,13 +53,13 @@ public class LibraryService implements Searchable, Sortable {
         }
     }
 
-        public void displayAllLibraryItems() {
+    public synchronized void displayAllLibraryItems() {
         for (LibraryItem item : libraryItems) {
             item.display();
         }
     }
 
-        public void displayItem(int id) {
+    public synchronized void displayItem(int id) {
         LibraryItem item = libraryRepository.getLibraryItemById(id);
         item.display();
     }
@@ -69,10 +71,13 @@ public class LibraryService implements Searchable, Sortable {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.EXIST) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.BORROWED.name(), null, null, null, null);
+                condition.wait();
             } else {
                 throw new RuntimeException("امکان قرض گرفتن کتاب وجود ندارد");
             }
-        }finally {
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
             lock.unlock();
         }
     }
@@ -83,10 +88,13 @@ public class LibraryService implements Searchable, Sortable {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.BORROWED) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST.name(), convertStringToDate(returnDateString), null, null, null);
+                condition.wait();
             } else {
                 throw new RuntimeException("امکان قرض گرفته شده وجود ندارد");
             }
-        }finally {
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
             lock.unlock();
         }
     }
@@ -96,4 +104,11 @@ public class LibraryService implements Searchable, Sortable {
         return book.getStatus().name();
     }
 
+    public Condition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
 }

@@ -8,14 +8,21 @@ import org.example.systemManagment.library.LibraryService;
 
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BookManagementThread implements Runnable {
-    private final BlockingQueue<String> requestQueue;
+    private Queue<String> requestQueue = new LinkedList<>();
     private final LibraryService libraryService;
     private final LibraryRepository libraryRepository;
+    private Lock lock = new ReentrantLock();
+    private Condition condition;
 
-    public BookManagementThread(BlockingQueue<String> requestQueue, LibraryService libraryService, LibraryRepository libraryRepository) {
+    public BookManagementThread(Queue<String> requestQueue, LibraryService libraryService, LibraryRepository libraryRepository) {
         this.requestQueue = requestQueue;
         this.libraryService = libraryService;
         this.libraryRepository = libraryRepository;
@@ -23,13 +30,17 @@ public class BookManagementThread implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                String request = requestQueue.take();
+        lock.lock();
+        try {
+            while (true) {
+                String request = requestQueue.peek();
                 processRequest(request);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e.getMessage());
+                condition.wait();
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
         }
     }
 
