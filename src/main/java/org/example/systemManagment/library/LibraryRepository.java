@@ -39,10 +39,7 @@ public class LibraryRepository {
         lock.lock();
         try {
             libraryMapping.put(item.getId(), item);
-            condition.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }finally {
+        } finally {
             lock.unlock();
         }
 //        libraryItems.add(item);
@@ -54,10 +51,7 @@ public class LibraryRepository {
         lock.lock();
         try {
             libraryMapping.remove(id);
-            condition.wait();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -75,12 +69,10 @@ public class LibraryRepository {
 //            libraryItems.remove(oldItem);
 //            libraryItems.add(book);
                 libraryMapping.put(id, book);
-                condition.wait();
             } else if (type == LibraryItem.LibraryItemType.THESIS) {
                 Thesis thesis = (Thesis) oldItem;
                 thesis.setUniversity(university);
                 libraryMapping.put(id, thesis);
-                condition.wait();
 //            libraryItems.remove(oldItem);
 //            libraryItems.add(thesis);
             } else if (type == LibraryItem.LibraryItemType.MAGAZINE) {
@@ -89,22 +81,18 @@ public class LibraryRepository {
 //            libraryItems.remove(oldItem);
 //            libraryItems.add(magazine);
                 libraryMapping.put(id, magazine);
-                condition.wait();
             } else if (type == LibraryItem.LibraryItemType.REFRENCE) {
                 Refrence refrence = (Refrence) oldItem;
                 refrence.setRefrenceType(Refrence.RefrenceType.valueOf(refrenceType));
 //            libraryItems.remove(oldItem);
 //            libraryItems.add(refrence);
                 libraryMapping.put(id, refrence);
-                condition.wait();
             } else {
                 throw new RuntimeException("Unknown library item type");
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }  finally {
-        lock.unlock();
-    }
+        } finally {
+            lock.unlock();
+        }
     }
 
     public LibraryItem getLibraryItemById(int id) {

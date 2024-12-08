@@ -10,12 +10,10 @@ import org.example.systemManagment.library.LibraryService;
 import org.example.systemManagment.multithread.BookManagementThread;
 import org.example.systemManagment.multithread.UserThread;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
@@ -33,9 +31,19 @@ public class Main {
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        executorService.submit(new UserThread(requestQueue));
-        executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
+        Future<?> future1 = executorService.submit(new UserThread(requestQueue));
+        try{
+            future1.get(5000, TimeUnit.MILLISECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
 
+        Future<?> future2 = executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
+        try{
+            future2.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         executorService.shutdown();
 
 //        userThread.start();

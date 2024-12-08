@@ -20,7 +20,6 @@ public class BookManagementThread implements Runnable {
     private final LibraryService libraryService;
     private final LibraryRepository libraryRepository;
     private Lock lock = new ReentrantLock();
-    private Condition condition;
 
     public BookManagementThread(Queue<String> requestQueue, LibraryService libraryService, LibraryRepository libraryRepository) {
         this.requestQueue = requestQueue;
@@ -32,13 +31,10 @@ public class BookManagementThread implements Runnable {
     public void run() {
         lock.lock();
         try {
-            while (true) {
-                String request = requestQueue.peek();
+            while (!requestQueue.isEmpty()) {
+                String request = requestQueue.poll();
                 processRequest(request);
-                condition.wait();
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }

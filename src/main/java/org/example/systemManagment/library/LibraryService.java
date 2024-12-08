@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -15,7 +14,6 @@ import static org.example.systemManagment.ConvertTime.convertStringToDate;
 public class LibraryService implements Searchable, Sortable {
 
     private final Lock lock = new ReentrantLock();
-    private Condition condition = lock.newCondition();
 
     List<LibraryItem> libraryItems;
     LibraryRepository libraryRepository;
@@ -71,12 +69,9 @@ public class LibraryService implements Searchable, Sortable {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.EXIST) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.BORROWED.name(), null, null, null, null);
-                condition.wait();
             } else {
                 throw new RuntimeException("امکان قرض گرفتن کتاب وجود ندارد");
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -88,12 +83,9 @@ public class LibraryService implements Searchable, Sortable {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.BORROWED) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST.name(), convertStringToDate(returnDateString), null, null, null);
-                condition.wait();
             } else {
                 throw new RuntimeException("امکان قرض گرفته شده وجود ندارد");
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -102,13 +94,5 @@ public class LibraryService implements Searchable, Sortable {
     public String showStatusBook(Integer id) {
         Book book = (Book) libraryRepository.getLibraryItemById(id);
         return book.getStatus().name();
-    }
-
-    public Condition getCondition() {
-        return condition;
-    }
-
-    public void setCondition(Condition condition) {
-        this.condition = condition;
     }
 }
