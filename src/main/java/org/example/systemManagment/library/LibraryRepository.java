@@ -16,19 +16,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LibraryRepository {
-    FileReader fileReader;
+
     private List<LibraryItem> libraryItems;
-//    private HashMap<Integer, LibraryItem> libraryMapping = new HashMap<>();
-//    private final Lock lock = new ReentrantLock();
-//    private final Condition condition = lock.newCondition();
+    //    private HashMap<Integer, LibraryItem> libraryMapping = new HashMap<>();
+    private final Lock lock = new ReentrantLock();
 
 //    public LibraryRepository(HashMap<Integer, LibraryItem> libraryMapping) {
 //        this.libraryMapping = libraryMapping;
 //    }
 
-    public LibraryRepository(FileReader fileReader) throws FileNotFoundException {
-        this.fileReader = fileReader;
-        this.libraryItems = fileReader.readLibrartItemesFromFile();
+    public LibraryRepository() throws FileNotFoundException {
+        this.libraryItems = FileReader.getLibraryItems();
     }
 
 
@@ -39,7 +37,13 @@ public class LibraryRepository {
 //        } finally {
 //            lock.unlock();
 //        }
-        libraryItems.add(item);
+        lock.lock();
+        try {
+            libraryItems.add(item);
+        } finally {
+            lock.unlock();
+        }
+
 
     }
 

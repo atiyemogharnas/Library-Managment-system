@@ -3,30 +3,33 @@ package org.example.systemManagment.library;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.library.factory.CreateLibraryItem;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.example.systemManagment.ConvertTime.convertStringToDate;
 
 public class LibraryService implements Searchable, Sortable {
 
     private static LibraryService instance;
-//    private final Lock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
 
     List<LibraryItem> libraryItems;
     LibraryRepository libraryRepository;
 
-//    public LibraryService(LibraryRepository libraryRepository) {
+    public LibraryService(LibraryRepository libraryRepository) {
+        this.libraryRepository = libraryRepository;
+        this.libraryItems = libraryRepository.getLibraryItems();
+//        this.libraryItems = new ArrayList<>();
+    }
+
+//    private LibraryService(LibraryRepository libraryRepository){
 //        this.libraryRepository = libraryRepository;
 //        libraryItems = libraryRepository.getLibraryItems();
-//        this.libraryItems = new ArrayList<>();
 //    }
-
-    private LibraryService(LibraryRepository libraryRepository){
-        this.libraryRepository = libraryRepository;
-        libraryItems = libraryRepository.getLibraryItems();
-    }
 
     //first write synchronized in function
     //second double check
@@ -74,38 +77,39 @@ public class LibraryService implements Searchable, Sortable {
         }
     }
 
-    public synchronized void displayItem(int id) {
+    public synchronized String displayItem(int id) {
         LibraryItem item = libraryRepository.getLibraryItemById(id);
-        item.display();
+        return item.toString();
     }
 
 
-    public void BorrowingBook(Integer id) {
-//        lock.lock();
-//        try {
+    public String BorrowingBook(Integer id) {
+        lock.lock();
+        try {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.EXIST) {
-                libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.BORROWED.name(), null, null, null, null);
+                libraryRepository.updateLibraryItem(0, LibraryItem.LibraryItemType.BOOK, Book.Status.BORROWED.name(), null, null, null, null);
+           return book.toString();
             } else {
                 throw new RuntimeException("امکان قرض گرفتن کتاب وجود ندارد");
             }
-//        } finally {
-//            lock.unlock();
-//        }
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void ReturnedBook(Integer id, String returnDateString) {
-//        lock.lock();
-//        try {
+        lock.lock();
+        try {
             Book book = (Book) libraryRepository.getLibraryItemById(id);
             if (book != null && book.getStatus() == Book.Status.BORROWED) {
                 libraryRepository.updateLibraryItem(book.getId(), LibraryItem.LibraryItemType.BOOK, Book.Status.EXIST.name(), convertStringToDate(returnDateString), null, null, null);
             } else {
                 throw new RuntimeException("امکان قرض گرفته شده وجود ندارد");
             }
-//        } finally {
-//            lock.unlock();
-//        }
+        } finally {
+            lock.unlock();
+        }
     }
 
     public String showStatusBook(Integer id) {
