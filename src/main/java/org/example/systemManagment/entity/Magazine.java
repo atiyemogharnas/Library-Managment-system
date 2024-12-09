@@ -21,5 +21,14 @@ public class Magazine extends LibraryItem {
         System.out.println("genre : " + getGenre());
     }
 
+    @Override
+    public String toString() {
+        return "LibraryItem{" +
+                "title='" + getTitle() + '\'' +
+                ", author='" + getAuthor() + '\'' +
+                ", year='" + getYear() + '\'' +
+                ", genre='" + getGenre() + '\'' +
+                '}';
+    }
 
 }

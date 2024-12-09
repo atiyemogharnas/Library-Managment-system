@@ -4,25 +4,28 @@ import org.example.systemManagment.ConvertTime;
 import org.example.systemManagment.file.FileReader;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.file.SerializeFile;
-import org.example.systemManagment.library.LibraryRepository;
-import org.example.systemManagment.library.LibraryItem;
-import org.example.systemManagment.library.LibraryService;
+import org.example.systemManagment.library.*;
+import org.example.systemManagment.library.observer.BookStore;
+import org.example.systemManagment.library.observer.EventManager;
+import org.example.systemManagment.library.strategy.SearchByAuthor;
+import org.example.systemManagment.library.strategy.SearchByTitle;
+import org.example.systemManagment.library.strategy.SearchByYear;
 import org.example.systemManagment.multithread.BookManagementThread;
 import org.example.systemManagment.multithread.UserThread;
+import org.example.systemManagment.user.User;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
-        BlockingQueue<String> requestQueue = new LinkedBlockingQueue<>();
-//        FileReader fileReader = new FileReader();
+        BlockingQueue<Object> requestQueue = new LinkedBlockingQueue<>();
+
         LibraryRepository libraryRepository = new LibraryRepository();
-//        LibraryRepository libraryRepository = new LibraryRepository(fileReader);
-        LibraryService libraryService = new LibraryService(libraryRepository);
+        LibraryService libraryService = LibraryService.getInstance(libraryRepository);
         SerializeFile serializeFile = new SerializeFile(libraryRepository);
         boolean fail = true;
 
@@ -31,9 +34,10 @@ public class Main {
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        Future<?> future1 = executorService.submit(new UserThread(requestQueue));
+        Future<?> future1 = executorService.submit(new UserThread(requestQueue, libraryRepository));
         try{
             future1.get(5000, TimeUnit.MILLISECONDS);
+            System.out.println("future1 is completed");
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             throw new RuntimeException(e);
         }
@@ -41,6 +45,7 @@ public class Main {
         Future<?> future2 = executorService.submit(new BookManagementThread(requestQueue, libraryService, libraryRepository));
         try{
             future2.get();
+            System.out.println("future2 is completed");
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -62,11 +67,15 @@ public class Main {
         System.out.println("10. show status Book ");
         System.out.println("11. serialize file ");
         System.out.println("12. deserialize file ");
+        System.out.println("14. advanced search ");
+        System.out.println("15. observe user ");
+        System.out.println("0. exit ");
         String choice = in.nextLine();
         do {
             switch (choice) {
                 case "1":
                     libraryService.displayAllLibraryItems();
+                    fail = false;
                     break;
                 case "2":
                     System.out.println("please enter a keyword for search");
@@ -164,9 +173,53 @@ public class Main {
                     serializeFile.serializeWithJson(bookTesti);
                     fail = false;
                     break;
+
+                case "14":
+                    System.out.println("please enter a type for search like title, author or ...");
+                    String textForSearch = in.nextLine();
+                    if (textForSearch.equalsIgnoreCase("title")) {
+                        System.out.println("please enter a word for search ");
+                        String word = in.nextLine();
+                        SearchByTitle searchByTitle = new SearchByTitle();
+                        List<LibraryItem> items = searchByTitle.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                    } else if (textForSearch.equalsIgnoreCase("author")) {
+                        System.out.println("please enter a word for search ");
+                        String word = in.nextLine();
+                        SearchByAuthor searchByAuthor = new SearchByAuthor();
+                        List<LibraryItem> items = searchByAuthor.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                    } else if (textForSearch.equalsIgnoreCase("date")) {
+                        System.out.println("please enter a year for search ");
+                        String word = in.nextLine();
+                        SearchByYear searchByYear = new SearchByYear();
+                        List<LibraryItem> items = searchByYear.performSearch(libraryRepository.getLibraryItems(), word);
+                        for (LibraryItem item : items) {
+                            System.out.println(item.toString());
+                        }
+                        fail = false;
+                    }
+
+                case "15":
+                    BookStore bookStore = new BookStore();
+                    User user1 = new User("Alice");
+                    User user2 = new User("Bob");
+                    User user3 = new User("cheri");
+                    bookStore.add(user1);
+                    bookStore.add(user2);
+                    bookStore.add(user3);
+                    bookStore.addBook("test1");
+                    bookStore.addBook("test2");
+                    fail = false;
+                    break;
+
             }
 
-        } while (fail);
+        } while (choice.equals("0"));
 
     }
 }

@@ -16,9 +16,9 @@ import java.util.List;
 
 public class FileReader {
 
-    private   List<LibraryItem> libraryItems = new ArrayList<>();
+    private static List<LibraryItem> libraryItems = new ArrayList<>();
 
-    public  List<LibraryItem> readLibrartItemesFromFile() throws FileNotFoundException {
+    public static List<LibraryItem> readLibrartItemesFromFile() throws FileNotFoundException {
         File file = new File("D:\\Educational Mahsan\\Library-Managment-system\\src\\main\\java\\resources\\book.txt");
 
         if (!file.exists()) {
@@ -70,5 +70,9 @@ public class FileReader {
             throw new RuntimeException(e);
         }
         return libraryItems;
+    }
+
+    public static List<LibraryItem> getLibraryItems() throws FileNotFoundException {
+        return readLibrartItemesFromFile();
     }
 }

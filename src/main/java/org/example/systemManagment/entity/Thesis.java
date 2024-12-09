@@ -21,4 +21,14 @@ public class Thesis extends LibraryItem {
         System.out.println("title : " + getTitle());
         System.out.println("university : " + getUniversity());
     }
+
+    @Override
+    public String toString() {
+        return "LibraryItem{" +
+                "title='" + getTitle() + '\'' +
+                ", author='" + getAuthor() + '\'' +
+                ", year='" + getYear() + '\'' +
+                ", university='" + getUniversity() + '\'' +
+                '}';
+    }
 }
