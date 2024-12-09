@@ -1,9 +1,11 @@
-package org.example.systemManagment.library;
+package org.example.systemManagment.library.strategy;
+
+import org.example.systemManagment.library.LibraryItem;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SearchByAuthor implements AdvancedSearchable{
+public class SearchByAuthor implements AdvancedSearchable {
     @Override
     public List<LibraryItem> performSearch(List<LibraryItem> items, String query) {
         return items.stream().filter(item -> item.getAuthor().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());

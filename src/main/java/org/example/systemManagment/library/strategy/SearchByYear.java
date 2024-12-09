@@ -1,4 +1,6 @@
-package org.example.systemManagment.library;
+package org.example.systemManagment.library.strategy;
+
+import org.example.systemManagment.library.LibraryItem;
 
 import java.util.Date;
 import java.util.List;
