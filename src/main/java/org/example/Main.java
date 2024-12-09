@@ -1,12 +1,9 @@
 package org.example;
 
 import org.example.systemManagment.ConvertTime;
-import org.example.systemManagment.file.FileReader;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.file.SerializeFile;
 import org.example.systemManagment.library.*;
-import org.example.systemManagment.library.observer.BookStore;
-import org.example.systemManagment.library.observer.EventManager;
 import org.example.systemManagment.library.strategy.SearchByAuthor;
 import org.example.systemManagment.library.strategy.SearchByTitle;
 import org.example.systemManagment.library.strategy.SearchByYear;
@@ -205,21 +202,19 @@ public class Main {
                     }
 
                 case "15":
-                    BookStore bookStore = new BookStore();
+                    Book observerItem =new Book();
                     User user1 = new User("Alice");
                     User user2 = new User("Bob");
                     User user3 = new User("cheri");
-                    bookStore.add(user1);
-                    bookStore.add(user2);
-                    bookStore.add(user3);
-                    bookStore.addBook("test1");
-                    bookStore.addBook("test2");
-                    fail = false;
+                    observerItem.add(user1);
+                    observerItem.add(user2);
+                    observerItem.add(user3);
+                    observerItem.setStatus(Book.Status.EXIST);
                     break;
 
             }
 
-        } while (choice.equals("0"));
+        } while (!choice.equals("0"));
 
     }
 }

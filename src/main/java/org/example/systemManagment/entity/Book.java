@@ -1,15 +1,19 @@
 package org.example.systemManagment.entity;
 
 import org.example.systemManagment.library.LibraryItem;
+import org.example.systemManagment.library.observer.EventManager;
+import org.example.systemManagment.library.observer.Observer;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
-public class Book extends LibraryItem {
+public class Book extends LibraryItem implements EventManager {
 
     private Status status;
     private Date returnDate ;
-
+    private final List<Observer> observers = new ArrayList<>();
 
 
     @Override
@@ -28,6 +32,18 @@ public class Book extends LibraryItem {
 
     }
 
+    @Override
+    public void add(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void execute() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
+    }
+
     public enum Status {
         EXIST,
         BORROWED,
@@ -40,6 +56,9 @@ public class Book extends LibraryItem {
 
     public void setStatus(Status status) {
         this.status = status;
+        if (status == Status.EXIST) {
+            execute();
+        }
     }
 
     public Date getReturnDate() {

@@ -13,7 +13,7 @@ public class User extends Observer {
     }
 
     @Override
-    public void update(String bookName) {
-        System.out.println("hello " + username + " book with name "+ bookName +" is available");
+    public void update() {
+        System.out.println("hello " + username + " book is available");
     }
 }

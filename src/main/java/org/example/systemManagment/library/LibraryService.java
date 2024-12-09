@@ -3,7 +3,6 @@ package org.example.systemManagment.library;
 import org.example.systemManagment.entity.Book;
 import org.example.systemManagment.library.factory.CreateLibraryItem;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -77,9 +76,9 @@ public class LibraryService implements Searchable, Sortable {
         }
     }
 
-    public synchronized String displayItem(int id) {
+    public synchronized void displayItem(int id) {
         LibraryItem item = libraryRepository.getLibraryItemById(id);
-        return item.toString();
+        item.display();
     }
 
 
