@@ -59,12 +59,12 @@ public class LibraryItemController {
     }
 
     public void borrowingBook(int id) {
-        bookService.BorrowingBook(id);
+        bookService.borrowingBook(id);
         System.out.println("borrowing book successful");
     }
 
     public void returningBook(int id) {
-        bookService.ReturnedBook(id);
+        bookService.returnedBook(id);
         System.out.println("returning book successful");
     }
 

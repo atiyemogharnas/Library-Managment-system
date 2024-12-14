@@ -20,7 +20,7 @@ public class BookService {
         this.libraryItems = libraryItemRepository.getLibraryItems();
     }
 
-    public void BorrowingBook(Integer id) {
+    public void borrowingBook(Integer id) {
         Book book = (Book) libraryItemRepository.getLibraryItemById(id);
         Predicate<Book.Status> existBook = bookStatus -> book.getStatus() == Book.Status.EXIST;
         if (existBook.test(book.getStatus())) {
@@ -37,7 +37,7 @@ public class BookService {
         }
     }
 
-    public void ReturnedBook(Integer id) {
+    public void returnedBook(Integer id) {
         Book book = (Book) libraryItemRepository.getLibraryItemById(id);
         Predicate<Book.Status> borrowedBook = bookStatus -> book.getStatus() == Book.Status.BORROWED;
         if (borrowedBook.test(book.getStatus())) {

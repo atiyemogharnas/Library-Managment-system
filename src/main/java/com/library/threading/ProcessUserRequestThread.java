@@ -33,12 +33,12 @@ public class ProcessUserRequestThread implements Runnable {
 
         switch (reqType) {
             case "land":
-                bookService.BorrowingBook(Integer.valueOf(secondPart));
+                bookService.borrowingBook(Integer.valueOf(secondPart));
                 System.out.println("Book Borrowed!");
                 break;
 
             case "return":
-                bookService.ReturnedBook(Integer.valueOf(secondPart));
+                bookService.returnedBook(Integer.valueOf(secondPart));
                 System.out.println("Book Returned!");
                 break;
         }
