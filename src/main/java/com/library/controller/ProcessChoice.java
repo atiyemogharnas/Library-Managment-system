@@ -65,6 +65,12 @@ public class ProcessChoice {
             case 14:
                 controller.multithreaded();
                 break;
+            case 15:
+                controller.checkUpdateJDBC();
+            case 16:
+                controller.checkDeleteJDBC();
+            case 17:
+                controller.checkFetchDataJDBC();
             case 0:
                 System.out.println("Exiting...");
                 return false;

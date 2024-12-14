@@ -19,17 +19,20 @@ public class Menu {
         System.out.println("11. search by title");
         System.out.println("12. search by year");
         System.out.println("13. serialize or deserialize");
-        System.out.println("14. check multi threaded ");
+        System.out.println("14. check multi threaded");
+        System.out.println("15. check update jdbc");
+        System.out.println("16. check delete jdbc");
+        System.out.println("17. check fetch data jdbc");
         System.out.println("0. exit ");
 
         System.out.print("Select an option (0 to exit): ");
         int choice = -1;
 
-        while (choice < 0 || choice > 15) {
+        while (choice < 0 || choice > 18) {
             try {
                 choice = Integer.parseInt(scanner.nextLine());
-                if (choice < 0 || choice > 15) {
-                    System.out.println("Invalid choice. Please enter a number between 0 and 20.");
+                if (choice < 0 || choice > 18) {
+                    System.out.println("Invalid choice. Please enter a number between 0 and 17.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
