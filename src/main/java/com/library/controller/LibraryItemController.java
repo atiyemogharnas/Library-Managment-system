@@ -7,8 +7,10 @@ import com.library.service.BookService;
 import com.library.service.LibraryItemService;
 import com.library.threading.ProcessUserRequestThread;
 import com.library.threading.UserRequestThread;
+import com.library.utils.JDBCConnection;
 import com.library.utils.SerializeFile;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.*;
 
@@ -57,12 +59,12 @@ public class LibraryItemController {
     }
 
     public void borrowingBook(int id) {
-        bookService.BorrowingBook(id);
+        bookService.borrowingBook(id);
         System.out.println("borrowing book successful");
     }
 
     public void returningBook(int id) {
-        bookService.ReturnedBook(id);
+        bookService.returnedBook(id);
         System.out.println("returning book successful");
     }
 
@@ -106,5 +108,27 @@ public class LibraryItemController {
         }
 
         System.out.println("Execution completed.");
+    }
+
+    public void checkUpdateJDBC()  {
+        try {
+            JDBCConnection.updateData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void checkFetchDataJDBC()  {
+        try {
+            JDBCConnection.fetchData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void checkDeleteJDBC()  {
+        try {
+            JDBCConnection.deleteData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
