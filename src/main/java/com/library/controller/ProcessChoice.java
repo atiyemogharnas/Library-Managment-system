@@ -3,6 +3,7 @@ package com.library.controller;
 import com.library.repository.DTO.LibraryItemRequestDTO;
 import com.library.repository.LibraryItemRepository;
 import com.library.service.BookService;
+import com.library.service.JDBCCrud;
 import com.library.service.LibraryItemService;
 import com.library.utils.ConvertDate;
 
@@ -16,7 +17,8 @@ public class ProcessChoice {
     private static final LibraryItemRepository repository = new LibraryItemRepository();
     private static final LibraryItemService service = LibraryItemService.getInstance(repository);
     private static final BookService bookservice = new BookService(repository);
-    private static final LibraryItemController controller = new LibraryItemController(service, bookservice);
+    private static final JDBCCrud jdbcCrud = new JDBCCrud();
+    private static final LibraryItemController controller = new LibraryItemController(service, bookservice,jdbcCrud);
 
 
     public static boolean processChoice(int choice) {

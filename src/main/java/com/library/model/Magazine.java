@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Magazine extends LibraryItem {
 
-    private String genre;
+    private final String genre;
 
     public Magazine(int id, String title, String author, Date year, LibraryItemType type, String genre) {
         super(id, title, author, year, type);

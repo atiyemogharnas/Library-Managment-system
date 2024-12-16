@@ -4,6 +4,7 @@ import com.library.patterns.strategy.SearchByTitle;
 import com.library.patterns.strategy.SearchByYear;
 import com.library.repository.DTO.LibraryItemRequestDTO;
 import com.library.service.BookService;
+import com.library.service.JDBCCrud;
 import com.library.service.LibraryItemService;
 import com.library.threading.ProcessUserRequestThread;
 import com.library.threading.UserRequestThread;
@@ -20,11 +21,13 @@ public class LibraryItemController {
     private final BookService bookService;
     private final SearchByTitle searchByTitle = new SearchByTitle();
     private final SearchByYear searchByYear = new SearchByYear();
-    private  BlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Object> queue = new LinkedBlockingQueue<>();
+    private final JDBCCrud jdbcCrud;
 
-    public LibraryItemController(LibraryItemService libraryItemService, BookService bookService) {
+    public LibraryItemController(LibraryItemService libraryItemService, BookService bookService, JDBCCrud jdbcCrud) {
         this.libraryItemService = libraryItemService;
         this.bookService = bookService;
+        this.jdbcCrud = jdbcCrud;
     }
 
     public void createLibraryItem(String objectType, LibraryItemRequestDTO requestDTO) {
@@ -112,21 +115,21 @@ public class LibraryItemController {
 
     public void checkUpdateJDBC()  {
         try {
-            JDBCConnection.updateData();
+            jdbcCrud.updateData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
     public void checkFetchDataJDBC()  {
         try {
-            JDBCConnection.fetchData();
+            jdbcCrud.fetchData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
     public void checkDeleteJDBC()  {
         try {
-            JDBCConnection.deleteData();
+            jdbcCrud.deleteData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
